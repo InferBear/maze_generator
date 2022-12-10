@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>画迷宫 By 熊熊熊熊爷</title>
+</head>
+<body>
+<canvas id="maze_container" width="2000" height="2000"></canvas>  
+<script>  
+var canvas = document.getElementById('maze_container');
+var context = canvas.getContext('2d');
+
+gap = 20
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
+rr = parseInt
+
+function drawLine(from_x, from_y, to_x, to_y) {
+    context.beginPath();
+    context.moveTo(from_x, from_y);
+    context.lineTo(to_x, to_y);
+    context.stroke();
+}
+
+function drawHorizontalLineWithRandomGap(from_x, from_y, length) {
+    count = length / gap
+    start_count = getRandomInt(count)
+    gap_x = from_x + start_count * gap
+
+    drawLine(from_x, from_y, gap_x, from_y)
+    drawLine(gap_x + gap, from_y, from_x+length, from_y)
+}
+
+function drawVerticalLineWithRandomGap(from_x, from_y, length) {
+    count = rr(length / gap)
+    start_count = getRandomInt(count)
+    gap_y = rr(from_y + start_count * gap)
+
+    drawLine(from_x, from_y, from_x, gap_y)
+    drawLine(from_x, gap_y + gap, from_x, from_y + length)
+}
+
+
+function dfs(from_x, from_y, to_x, to_y) {
+    console.log(from_x, from_y, to_x, to_y)
+    if (Math.abs(from_x - to_x) <= gap) {
+        return
+    }
+
+    if (Math.abs(from_y - to_y) <= gap) {
+        return
+    }
+    let len_x = rr(to_x - from_x)
+    let len_y = rr(to_y - from_y)
+    let mid_x = rr((from_x + to_x) / 2)
+    let mid_y = rr((from_y + to_y) / 2)
+
+    drawHorizontalLineWithRandomGap(from_x, mid_y, rr(len_x/2))
+    drawHorizontalLineWithRandomGap(mid_x, mid_y, rr(len_x/2))
+    drawVerticalLineWithRandomGap(mid_x, from_y, rr(len_y/2))
+    drawVerticalLineWithRandomGap(mid_x, mid_y, rr(len_y/2))
+
+    dfs(from_x, from_y, mid_x, mid_y)
+    dfs(mid_x, mid_y, to_x, to_y)
+    dfs(from_x, mid_y, mid_x, to_y)
+    dfs(mid_x, from_y, to_x, mid_y)
+    
+}
+
+function draw_board(from_x, from_y, to_x, to_y) {
+    drawLine(from_x, from_y, from_x, to_y)
+    drawLine(from_x, from_y, to_x, from_y)
+    drawLine(to_x, from_y, to_x, to_y)
+    drawLine(from_x, to_y, to_x, to_y)
+}
+
+function draw_maze(from_x, from_y, to_x, to_y) {
+    draw_board(from_x, from_y, to_x, to_y)
+    dfs(from_x, from_y, to_x, to_y)
+}
+
+let sz = 4
+
+draw_maze(100, 100, gap * (1 << sz) + 100, gap * (1 << sz) + 100)
+
+
+</script> 
+</body>
+</html>
