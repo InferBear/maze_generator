@@ -25,7 +25,11 @@ function drawLine(from_x, from_y, to_x, to_y) {
     context.stroke();
 }
 
-function drawHorizontalLineWithRandomGap(from_x, from_y, length) {
+function drawHorizontalLine(from_x, from_y, length, need_gap) {
+    if (!need_gap) {
+        drawLine(from_x, from_y, from_x + length, from_y)
+        return
+    }
     count = length / gap
     start_count = getRandomInt(count)
     gap_x = from_x + start_count * gap
@@ -34,7 +38,11 @@ function drawHorizontalLineWithRandomGap(from_x, from_y, length) {
     drawLine(gap_x + gap, from_y, from_x+length, from_y)
 }
 
-function drawVerticalLineWithRandomGap(from_x, from_y, length) {
+function drawVerticalLine(from_x, from_y, length, need_gap) {
+    if (!need_gap) {
+        drawLine(from_x, from_y, from_x, from_y + length)
+        return
+    }
     count = rr(length / gap)
     start_count = getRandomInt(count)
     gap_y = rr(from_y + start_count * gap)
@@ -58,10 +66,11 @@ function dfs(from_x, from_y, to_x, to_y) {
     let mid_x = rr((from_x + to_x) / 2)
     let mid_y = rr((from_y + to_y) / 2)
 
-    drawHorizontalLineWithRandomGap(from_x, mid_y, rr(len_x/2))
-    drawHorizontalLineWithRandomGap(mid_x, mid_y, rr(len_x/2))
-    drawVerticalLineWithRandomGap(mid_x, from_y, rr(len_y/2))
-    drawVerticalLineWithRandomGap(mid_x, mid_y, rr(len_y/2))
+    let absent = rr(getRandomInt(4))
+    drawHorizontalLine(from_x, mid_y, rr(len_x/2), absent != 0)
+    drawHorizontalLine(mid_x, mid_y, rr(len_x/2), absent != 1)
+    drawVerticalLine(mid_x, from_y, rr(len_y/2), absent != 2)
+    drawVerticalLine(mid_x, mid_y, rr(len_y/2), absent != 3)
 
     dfs(from_x, from_y, mid_x, mid_y)
     dfs(mid_x, mid_y, to_x, to_y)
